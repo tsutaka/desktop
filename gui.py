@@ -24,12 +24,7 @@ if __name__ == '__main__':
 
     # タイトルの設定
     root.title('DeskAI')
-    frame1 = ttk.Frame(
-        root,
-        height=200,
-        width=300,
-        relief='sunken',
-        borderwidth=5)
+    frame1 = ttk.Frame(root)
     frame1.grid()
 
     # フレームにラベルを追加
@@ -37,11 +32,12 @@ if __name__ == '__main__':
     today_str = date.date_format(today)
 
     label_days = []
+    days = []
     # 今日から一週間分のラベルを作成
+    today = date.get_today()
     for cnt in range(WEEK_DAYS):
-        today = date.get_today()
-        day_str = date.date_format(
-            date.add_days(today, cnt) )
+        days += [date.add_days(today, cnt)]
+        day_str = date.date_format(days[cnt])
         label_days += [ttk.Label(frame1, text=day_str)]
     # フレームにテキストボックスを追加
     entry1 = ttk.Entry(frame1, textvariable=t)
@@ -51,7 +47,7 @@ if __name__ == '__main__':
     # 各要素のグリッド位置を指定
     frame1.grid(row=0,column=0,sticky=(N,E,S,W))
     for cnt in range(WEEK_DAYS):
-        label_days[cnt].grid(row=1,column=1+cnt,sticky=W)
+        label_days[cnt].grid(row=1,column=cnt+1,sticky=W)
     entry1.grid(row=2,column=2,sticky=W)
     button1.grid(row=3,column=3,sticky=W)
 
