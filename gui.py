@@ -1,51 +1,62 @@
 from tkinter import *
 from tkinter import ttk
 
+# -function()
+# from pythonlib.date import dunction
+
+# -date.function()
+from pythonlib import date
+
+# pythonlib.date.function()
+# import pythonlib
+
+WEEK_DAYS = 7
+
 def testprint():
     print('Hello, %s!' % t.get())
 
-# GUIの初期化
-root = Tk()
-# グローバル変数の文字列変数の宣言
-t = StringVar()
+if __name__ == '__main__':
 
-# タイトルの設定
-root.title('DeskAI')
-frame1 = ttk.Frame(
-    root,
-    height=200,
-    width=300,
-    relief='sunken',
-    borderwidth=5)
-frame1.grid()
+    # GUIの初期化
+    root = Tk()
+    # グローバル変数の文字列変数の宣言
+    t = StringVar()
 
-# フレームにラベルを追加
-label_day0 = ttk.Label(frame1, text='day0 ')
-label_day1 = ttk.Label(frame1, text='day1 ')
-label_day2 = ttk.Label(frame1, text='day2 ')
-label_day3 = ttk.Label(frame1, text='day3 ')
-label_day4 = ttk.Label(frame1, text='day4 ')
-label_day5 = ttk.Label(frame1, text='day5 ')
-label_day6 = ttk.Label(frame1, text='day6 ')
-# フレームにテキストボックスを追加
-entry1 = ttk.Entry(frame1, textvariable=t)
-# フレームにボタンを追加（処理を関連付け）
-button1 = ttk.Button(frame1, text='OK', command=testprint)
+    # タイトルの設定
+    root.title('DeskAI')
+    frame1 = ttk.Frame(
+        root,
+        height=200,
+        width=300,
+        relief='sunken',
+        borderwidth=5)
+    frame1.grid()
 
-# 各要素のグリッド位置を指定
-frame1.grid(row=0,column=0,sticky=(N,E,S,W))
-label_day0.grid(row=1,column=1,sticky=W)
-label_day1.grid(row=1,column=2,sticky=W)
-label_day2.grid(row=1,column=3,sticky=W)
-label_day3.grid(row=1,column=4,sticky=W)
-label_day4.grid(row=1,column=5,sticky=W)
-label_day5.grid(row=1,column=6,sticky=W)
-label_day6.grid(row=1,column=7,sticky=W)
-entry1.grid(row=2,column=2,sticky=W)
-button1.grid(row=3,column=3,sticky=W)
+    # フレームにラベルを追加
+    today = date.get_today()
+    today_str = date.date_format(today)
 
-# 全子要素にパディングを設定
-for child in frame1.winfo_children():
-    child.grid_configure(padx=5, pady=5)
+    label_days = []
+    # 今日から一週間分のラベルを作成
+    for cnt in range(WEEK_DAYS):
+        today = date.get_today()
+        day_str = date.date_format(
+            date.add_days(today, cnt) )
+        label_days += [ttk.Label(frame1, text=day_str)]
+    # フレームにテキストボックスを追加
+    entry1 = ttk.Entry(frame1, textvariable=t)
+    # フレームにボタンを追加（処理を関連付け）
+    button1 = ttk.Button(frame1, text='OK', command=testprint)
 
-root.mainloop()
+    # 各要素のグリッド位置を指定
+    frame1.grid(row=0,column=0,sticky=(N,E,S,W))
+    for cnt in range(WEEK_DAYS):
+        label_days[cnt].grid(row=1,column=1+cnt,sticky=W)
+    entry1.grid(row=2,column=2,sticky=W)
+    button1.grid(row=3,column=3,sticky=W)
+
+    # 全子要素にパディングを設定
+    for child in frame1.winfo_children():
+        child.grid_configure(padx=5, pady=5)
+
+    root.mainloop()
