@@ -2,13 +2,15 @@ from tkinter import *
 from tkinter import ttk
 
 # -function()
-# from pythonlib.date import dunction
+# from pythonlib.date import function
 
 # -date.function()
 from pythonlib import date
 
 # pythonlib.date.function()
 # import pythonlib
+
+from weather import Weather
 
 WEEK_DAYS = 7
 
@@ -19,6 +21,11 @@ if __name__ == '__main__':
 
     # GUIの初期化
     root = Tk()
+
+    # 天気予報クラスの初期化
+    weather = Weather("Tokyo,JP", "config.ini")
+    print(weather.get_forecast())
+
     # グローバル変数の文字列変数の宣言
     t = StringVar()
 
@@ -31,9 +38,9 @@ if __name__ == '__main__':
     today = date.get_today()
     today_str = date.date_format(today)
 
+    # 今日から一週間分のラベルを作成
     label_days = []
     days = []
-    # 今日から一週間分のラベルを作成
     today = date.get_today()
     for cnt in range(WEEK_DAYS):
         days += [date.add_days(today, cnt)]
@@ -55,4 +62,5 @@ if __name__ == '__main__':
     for child in frame1.winfo_children():
         child.grid_configure(padx=5, pady=5)
 
+    # メインループ
     root.mainloop()
