@@ -2,33 +2,82 @@ import requests as req
 import json
 import sys
 import configparser
+import datetime
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-# print(config.sections())
+class Weather:
 
-# APIキーの指定
-API_KEY = config['WeatherAPI']['API_KEY']
-# URLひな形
-api = "http://api.openweathermap.org/data/2.5/weather?q={city}&APPID={key}"
+    def __init__(self, city_name_, file_name):
+        # 初期化
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        # APIキーの指定
+        self.API_KEY = config['WeatherAPI']['API_KEY']
+        self.city_name = city_name_
 
-# 検索都市名
-city_name = "Tokyo,JP"
-url = api.format(city = city_name, key = API_KEY)
+    def get_weather(self):
+        # 現在の天気URLひな形
+        api = "http://api.openweathermap.org/data/2.5/" + \
+            "weather?q={city}&units=metric&APPID={key}"
+        url = api.format(city = self.city_name, key = self.API_KEY)
+        # print(url)
+        response = req.get(url)
+        data = json.loads(response.text)
+        # print("+ 都市=", data["name"])
+        # print("| 天気=", data["weather"][0]["main"])
+        # print("| 最低気温=", data["main"]["temp_min"])
+        # print("| 最高気温=", data["main"]["temp_max"])
+        # print("| 湿度=", data["main"]["humidity"])
 
-# 温度変換(ケルビン→摂氏)
-k2c = lambda k: k - 273.15
+        output = []
+        output += [data["name"]]
+        output += [data["weather"][0]["main"]]
+        output += [data["main"]["temp_min"]]
+        output += [data["main"]["temp_max"]]
+        output += [data["main"]["humidity"]]
 
-# print(url)
-response = req.get(url)
-data = json.loads(response.text)
-print(data)
-print("+ 都市=", data["name"])
-print("| 天気=", data["weather"][0]["description"])
-print("| 最低気温=", k2c(data["main"]["temp_min"]))
-print("| 最高気温=", k2c(data["main"]["temp_max"]))
-print("| 湿度=", data["main"]["humidity"])
-print("| 気圧=", data["main"]["pressure"])
-print("| 風向き=", data["wind"]["deg"])
-print("| 風速度=", data["wind"]["speed"])
-print("")
+        return output
+
+    def get_forecast(self):
+        # 未来の天気URLひな形
+        api = "http://api.openweathermap.org/data/2.5/" + \
+            "forecast?q={city}&units=metric&APPID={key}"
+        url = api.format(city = self.city_name, key = self.API_KEY)
+        # print(url)
+        response = req.get(url)
+        data = json.loads(response.text)
+        # print(
+        #     json.dumps(data, ensure_ascii=False, indent=4,
+        #         sort_keys=False, separators=(',', ': '))
+        #     )
+
+        # print("+場所=", data["city"]["name"])
+        outputs = []
+        lists = data["list"]
+        for cnt, list_ in enumerate(lists):
+            # print("+ 日時=", list_["dt_txt"])
+            # print("| 天気=", list_["weather"][0]["main"])
+            # print("| 最低気温=", list_["main"]["temp_min"])
+            # print("| 最高気温=", list_["main"]["temp_max"])
+            # print("| 湿度=", list_["main"]["humidity"])
+            output = []
+            output += [list_["dt_txt"]]
+            output += [list_["weather"][0]["main"]]
+            output += [list_["main"]["temp_min"]]
+            output += [list_["main"]["temp_max"]]
+            output += [list_["main"]["humidity"]]
+            outputs += [output]
+        return outputs
+
+if __name__ == '__main__':
+    print(">start")
+
+    # インスタンス生成
+    weather = Weather("Tokyo,JP", "config.ini")
+
+    # 現在の天気を取得
+    print(weather.get_weather())
+
+    # 天気予報の取得
+    # print(weather.get_forecast())
+
+    print(">end")
