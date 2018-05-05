@@ -4,6 +4,8 @@ import sys
 import configparser
 import datetime
 
+from pythonlib import date
+
 class Weather:
 
     def __init__(self, city_name_, file_name):
@@ -68,6 +70,28 @@ class Weather:
             outputs += [output]
         return outputs
 
+    def get_forecast_weather_day(self, date_):
+
+        # 天気予報を取得
+        data = weather.get_forecast()
+
+        outputs = []
+        for weather_ in data:
+            weather_year = str(weather_[0])[0:4]
+            weather_month = str(weather_[0])[5:7]
+            weather_day = str(weather_[0])[8:10]
+            weather_hour = str(weather_[0])[11:13]
+            # print(weather_year, weather_month,
+            #     weather_day, weather_hour)
+
+            # 入力日時と同じ日付の場合
+            if(date_.year == int(weather_year) and
+                date_.month == int(weather_month) and
+                date_.day == int(weather_day)):
+                outputs += [weather_]
+
+        return outputs
+
 if __name__ == '__main__':
     print(">start")
 
@@ -75,9 +99,12 @@ if __name__ == '__main__':
     weather = Weather("Tokyo,JP", "config.ini")
 
     # 現在の天気を取得
-    print(weather.get_weather())
+    # print(weather.get_weather())
 
     # 天気予報の取得
     # print(weather.get_forecast())
+
+    # 天気予報1日分を取得
+    print(weather.get_forecast_weather_day(date.get_today()))
 
     print(">end")
