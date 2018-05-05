@@ -47,10 +47,10 @@ class Weather:
         # print(url)
         response = req.get(url)
         data = json.loads(response.text)
-        # print(
-        #     json.dumps(data, ensure_ascii=False, indent=4,
-        #         sort_keys=False, separators=(',', ': '))
-        #     )
+        print(
+            json.dumps(data, ensure_ascii=False, indent=4,
+                sort_keys=False, separators=(',', ': '))
+            )
 
         # print("+場所=", data["city"]["name"])
         outputs = []
@@ -63,6 +63,7 @@ class Weather:
             # print("| 湿度=", list_["main"]["humidity"])
             output = []
             output += [list_["dt_txt"]]
+            output += [list_["weather"][0]["id"]]
             output += [list_["weather"][0]["main"]]
             output += [list_["main"]["temp_min"]]
             output += [list_["main"]["temp_max"]]
@@ -102,9 +103,9 @@ if __name__ == '__main__':
     # print(weather.get_weather())
 
     # 天気予報の取得
-    # print(weather.get_forecast())
+    print(weather.get_forecast())
 
     # 天気予報1日分を取得
-    print(weather.get_forecast_weather_day(date.get_today()))
+    # print(weather.get_forecast_weather_day(date.get_today()))
 
     print(">end")
